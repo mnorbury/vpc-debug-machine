@@ -24,8 +24,9 @@ resource "tls_private_key" "debug_key" {
 
 # Create AWS key pair
 resource "aws_key_pair" "debug_key" {
-  key_name   = "vpc-debug-${var.vpc_id}-${var.subnet_id}"
+  key_name   = "${var.key_name_prefix}-${var.vpc_id}-${var.subnet_id}"
   public_key = tls_private_key.debug_key.public_key_openssh
+  tags       = var.tags
 }
 
 # Write private key locally
@@ -42,11 +43,11 @@ resource "aws_security_group" "debug_sg" {
   vpc_id      = var.vpc_id
 
   ingress {
-    description = "SSH from anywhere"
+    description = "SSH from allowed CIDR blocks"
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = var.ssh_cidr_blocks
   }
 
   egress {
@@ -57,9 +58,12 @@ resource "aws_security_group" "debug_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = {
-    Name = "vpc-debug-sg"
-  }
+  tags = merge(
+    {
+      Name = "vpc-debug-sg"
+    },
+    var.tags
+  )
 }
 
 # Get the latest Amazon Linux 2023 AMI
@@ -80,14 +84,24 @@ data "aws_ami" "amazon_linux_2023" {
 
 # EC2 instance
 resource "aws_instance" "debug_instance" {
-  ami                         = data.aws_ami.amazon_linux_2023.id
-  instance_type               = "t3.micro"
+  ami                         = var.ami_id != null ? var.ami_id : data.aws_ami.amazon_linux_2023.id
+  instance_type               = var.instance_type
   subnet_id                   = var.subnet_id
   vpc_security_group_ids      = [aws_security_group.debug_sg.id]
   key_name                    = aws_key_pair.debug_key.key_name
-  associate_public_ip_address = true
+  associate_public_ip_address = var.associate_public_ip
+  monitoring                  = var.enable_detailed_monitoring
+  user_data                   = var.user_data
 
-  tags = {
-    Name = "vpc-debug-instance"
+  root_block_device {
+    volume_size = var.root_volume_size
+    volume_type = var.root_volume_type
   }
+
+  tags = merge(
+    {
+      Name = var.instance_name
+    },
+    var.tags
+  )
 }
