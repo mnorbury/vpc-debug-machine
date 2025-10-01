@@ -28,7 +28,7 @@ module "debug_instance" {
   ssh_cidr_blocks     = ["203.0.113.0/24"] # Replace with your IP/CIDR
 
   # Storage configuration
-  root_volume_size = 20
+  root_volume_size = 30
   root_volume_type = "gp3"
 
   # User data - install useful debugging tools

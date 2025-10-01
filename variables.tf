@@ -35,7 +35,12 @@ variable "associate_public_ip" {
 variable "root_volume_size" {
   description = "Size of the root volume in GB"
   type        = number
-  default     = 8
+  default     = 30
+
+  validation {
+    condition     = var.root_volume_size >= 30
+    error_message = "root_volume_size must be at least 30 GB for Amazon Linux 2023."
+  }
 }
 
 variable "root_volume_type" {
