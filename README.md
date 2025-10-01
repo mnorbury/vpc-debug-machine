@@ -90,7 +90,7 @@ module "debug_instance" {
 | instance_name | Name tag for the EC2 instance | `string` | `"vpc-debug-instance"` | no |
 | ssh_cidr_blocks | CIDR blocks allowed to SSH into the instance | `list(string)` | `["0.0.0.0/0"]` | no |
 | associate_public_ip | Whether to associate a public IP address with the instance | `bool` | `true` | no |
-| root_volume_size | Size of the root volume in GB | `number` | `8` | no |
+| root_volume_size | Size of the root volume in GB | `number` | `30` | no |
 | root_volume_type | Type of the root volume | `string` | `"gp3"` | no |
 | ami_id | AMI ID to use for the instance. If not specified, latest Amazon Linux 2023 will be used | `string` | `null` | no |
 | user_data | User data script to run on instance startup | `string` | `null` | no |
