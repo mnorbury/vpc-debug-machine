@@ -35,7 +35,7 @@ variable "associate_public_ip" {
 variable "root_volume_size" {
   description = "Size of the root volume in GB"
   type        = number
-  default     = 8
+  default     = 30
 }
 
 variable "root_volume_type" {
