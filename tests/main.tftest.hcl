@@ -74,11 +74,17 @@ run "validate_ssh_cidr_blocks" {
   }
 
   assert {
-    condition = alltrue([
-      for rule in aws_security_group.debug_sg.ingress :
-        contains(rule.cidr_blocks, "10.0.0.0/8") && contains(rule.cidr_blocks, "172.16.0.0/12")
-    ])
-    error_message = "Security group should include custom CIDR blocks"
+    condition     = length(aws_security_group.debug_sg.ingress) == 1
+    error_message = "Security group should have exactly one ingress rule"
+  }
+
+  assert {
+    condition = (
+      length(aws_security_group.debug_sg.ingress) > 0 &&
+      contains(aws_security_group.debug_sg.ingress[0].cidr_blocks, "10.0.0.0/8") &&
+      contains(aws_security_group.debug_sg.ingress[0].cidr_blocks, "172.16.0.0/12")
+    )
+    error_message = "SSH ingress rule should include custom CIDR blocks: 10.0.0.0/8 and 172.16.0.0/12"
   }
 }
 
