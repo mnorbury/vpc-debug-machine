@@ -68,9 +68,9 @@ run "validate_ssh_cidr_blocks" {
   command = plan
 
   variables {
-    vpc_id           = "vpc-12345678"
-    subnet_id        = "subnet-12345678"
-    ssh_cidr_blocks  = ["10.0.0.0/8", "172.16.0.0/12"]
+    vpc_id          = "vpc-12345678"
+    subnet_id       = "subnet-12345678"
+    ssh_cidr_blocks = ["10.0.0.0/8", "172.16.0.0/12"]
   }
 
   assert {
@@ -136,8 +136,8 @@ run "validate_monitoring" {
   command = plan
 
   variables {
-    vpc_id                    = "vpc-12345678"
-    subnet_id                 = "subnet-12345678"
+    vpc_id                     = "vpc-12345678"
+    subnet_id                  = "subnet-12345678"
     enable_detailed_monitoring = true
   }
 
