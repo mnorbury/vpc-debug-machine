@@ -53,7 +53,7 @@ output "security_group_id" {
 }
 
 output "connection_info" {
-  value = <<-EOT
+  value       = <<-EOT
     To connect to this private instance, use one of these methods:
 
     1. Via AWS Systems Manager Session Manager:

@@ -39,7 +39,7 @@ variable "root_volume_size" {
 
   validation {
     condition     = var.root_volume_size >= 30
-    error_message = "root_volume_size must be at least 30 GB for Amazon Linux 2023."
+    error_message = "Root volume size must be at least 30 GB for Amazon Linux 2023."
   }
 }
 
