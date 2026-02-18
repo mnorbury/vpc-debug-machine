@@ -18,20 +18,23 @@ terraform {
 
 # Generate SSH key pair
 resource "tls_private_key" "debug_key" {
+  count     = var.create_instance_profile ? 0 : 1
   algorithm = "RSA"
   rsa_bits  = 4096
 }
 
 # Create AWS key pair
 resource "aws_key_pair" "debug_key" {
+  count      = var.create_instance_profile ? 0 : 1
   key_name   = "${var.key_name_prefix}-${var.vpc_id}-${var.subnet_id}"
-  public_key = tls_private_key.debug_key.public_key_openssh
+  public_key = tls_private_key.debug_key[0].public_key_openssh
   tags       = var.tags
 }
 
 # Write private key locally
 resource "local_file" "private_key" {
-  content         = tls_private_key.debug_key.private_key_pem
+  count           = var.create_instance_profile ? 0 : 1
+  content         = tls_private_key.debug_key[0].private_key_pem
   filename        = "${path.module}/debug-key.pem"
   file_permission = "0400"
 }
@@ -139,7 +142,7 @@ resource "aws_instance" "debug_instance" {
   instance_type               = var.instance_type
   subnet_id                   = var.subnet_id
   vpc_security_group_ids      = [aws_security_group.debug_sg.id]
-  key_name                    = aws_key_pair.debug_key.key_name
+  key_name                    = var.create_instance_profile ? null : aws_key_pair.debug_key[0].key_name
   associate_public_ip_address = var.associate_public_ip
   monitoring                  = var.enable_detailed_monitoring
   user_data                   = var.user_data
