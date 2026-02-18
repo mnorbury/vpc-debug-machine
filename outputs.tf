@@ -20,12 +20,12 @@ output "security_group_id" {
 
 output "private_key_file" {
   description = "Path to the private key file"
-  value       = local_file.private_key.filename
+  value       = var.create_instance_profile ? null : local_file.private_key[0].filename
 }
 
 output "ssh_command" {
   description = "SSH command to connect to the instance"
-  value       = "ssh -i ${local_file.private_key.filename} ec2-user@${aws_instance.debug_instance.public_ip}"
+  value       = var.create_instance_profile ? null : "ssh -i ${local_file.private_key[0].filename} ec2-user@${aws_instance.debug_instance.public_ip}"
 }
 
 output "instance_profile_name" {
