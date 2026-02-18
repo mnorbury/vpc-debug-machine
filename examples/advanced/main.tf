@@ -44,13 +44,12 @@ module "debug_instance" {
       htop \
       tmux \
       vim \
-      curl \
       wget \
       tcpdump \
       net-tools \
       bind-utils \
       telnet \
-      nc \
+      nmap-ncat \
       traceroute \
       iperf3
 
