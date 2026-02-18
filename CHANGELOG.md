@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/mnorbury/vpc-debug-machine/compare/v0.2.1...v0.3.0) (2026-02-18)
+
+
+### Features
+
+* Adding instance profile ([#15](https://github.com/mnorbury/vpc-debug-machine/issues/15)) ([1254999](https://github.com/mnorbury/vpc-debug-machine/commit/1254999e7946c25af3633f062e8b2b7f103c738b))
+
 ## [0.2.1](https://github.com/mnorbury/vpc-debug-machine/compare/v0.2.0...v0.2.1) (2025-10-01)
 
 
