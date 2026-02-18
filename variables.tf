@@ -73,6 +73,12 @@ variable "enable_detailed_monitoring" {
   default     = false
 }
 
+variable "create_instance_profile" {
+  description = "Whether to create an IAM instance profile with SSM access and attach it to the instance"
+  type        = bool
+  default     = true
+}
+
 variable "key_name_prefix" {
   description = "Prefix for the SSH key pair name"
   type        = string

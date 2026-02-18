@@ -27,3 +27,8 @@ output "ssh_command" {
   description = "SSH command to connect to the instance"
   value       = "ssh -i ${local_file.private_key.filename} ec2-user@${aws_instance.debug_instance.public_ip}"
 }
+
+output "instance_profile_name" {
+  description = "Name of the IAM instance profile attached to the instance (null if create_instance_profile is false)"
+  value       = var.create_instance_profile ? aws_iam_instance_profile.ssm_profile[0].name : null
+}

@@ -82,6 +82,42 @@ data "aws_ami" "amazon_linux_2023" {
   }
 }
 
+# IAM instance profile for SSM access
+resource "aws_iam_role" "ssm_role" {
+  count = var.create_instance_profile ? 1 : 0
+
+  name_prefix = "vpc-debug-ssm-role-"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = {
+        Service = "ec2.amazonaws.com"
+      }
+    }]
+  })
+
+  tags = var.tags
+}
+
+resource "aws_iam_role_policy_attachment" "ssm_policy" {
+  count = var.create_instance_profile ? 1 : 0
+
+  role       = aws_iam_role.ssm_role[0].name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+resource "aws_iam_instance_profile" "ssm_profile" {
+  count = var.create_instance_profile ? 1 : 0
+
+  name_prefix = "vpc-debug-ssm-profile-"
+  role        = aws_iam_role.ssm_role[0].name
+
+  tags = var.tags
+}
+
 # EC2 instance
 resource "aws_instance" "debug_instance" {
   ami                         = var.ami_id != null ? var.ami_id : data.aws_ami.amazon_linux_2023.id
@@ -92,6 +128,7 @@ resource "aws_instance" "debug_instance" {
   associate_public_ip_address = var.associate_public_ip
   monitoring                  = var.enable_detailed_monitoring
   user_data                   = var.user_data
+  iam_instance_profile        = var.create_instance_profile ? aws_iam_instance_profile.ssm_profile[0].name : null
 
   root_block_device {
     volume_size = var.root_volume_size
